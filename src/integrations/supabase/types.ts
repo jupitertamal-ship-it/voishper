@@ -14,7 +14,203 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analytics: {
+        Row: {
+          bot_id: string
+          bot_success_rate: number | null
+          date: string
+          id: string
+          leads_captured: number
+          total_conversations: number
+        }
+        Insert: {
+          bot_id: string
+          bot_success_rate?: number | null
+          date?: string
+          id?: string
+          leads_captured?: number
+          total_conversations?: number
+        }
+        Update: {
+          bot_id?: string
+          bot_success_rate?: number | null
+          date?: string
+          id?: string
+          leads_captured?: number
+          total_conversations?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bots: {
+        Row: {
+          colors: Json | null
+          created_at: string
+          greeting_message: string | null
+          id: string
+          name: string
+          system_prompt: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          colors?: Json | null
+          created_at?: string
+          greeting_message?: string | null
+          id?: string
+          name?: string
+          system_prompt?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          colors?: Json | null
+          created_at?: string
+          greeting_message?: string | null
+          id?: string
+          name?: string
+          system_prompt?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          bot_id: string
+          id: string
+          message_count: number
+          session_id: string
+          started_at: string
+        }
+        Insert: {
+          bot_id: string
+          id?: string
+          message_count?: number
+          session_id: string
+          started_at?: string
+        }
+        Update: {
+          bot_id?: string
+          id?: string
+          message_count?: number
+          session_id?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_items: {
+        Row: {
+          bot_id: string
+          content_text: string | null
+          created_at: string
+          id: string
+          source_name: string
+          type: string
+        }
+        Insert: {
+          bot_id: string
+          content_text?: string | null
+          created_at?: string
+          id?: string
+          source_name: string
+          type: string
+        }
+        Update: {
+          bot_id?: string
+          content_text?: string | null
+          created_at?: string
+          id?: string
+          source_name?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_items_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          bot_id: string
+          chat_transcript: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          bot_id: string
+          chat_transcript?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+        }
+        Update: {
+          bot_id?: string
+          chat_transcript?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
