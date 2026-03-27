@@ -197,9 +197,11 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
                   }
                 >
                   {msg.role === 'assistant' ? (
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                      {msg.content.replace('[HANDOFF]', '')}
-                    </ReactMarkdown>
+                    <div className="prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.content.replace('[HANDOFF]', '')}
+                      </ReactMarkdown>
+                    </div>
                   ) : (
                     msg.content
                   )}
