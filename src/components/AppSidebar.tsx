@@ -1,4 +1,4 @@
-import { LayoutDashboard, Bot, BookOpen, BarChart3, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Bot, BookOpen, BarChart3, Settings, LogOut, Mail } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
@@ -20,6 +20,7 @@ const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'My Bots', url: '/bots', icon: Bot },
   { title: 'Knowledge Base', url: '/knowledge', icon: BookOpen },
+  { title: 'Leads', url: '/leads', icon: Mail },
   { title: 'Analytics', url: '/analytics', icon: BarChart3 },
   { title: 'Settings', url: '/settings', icon: Settings },
 ];
@@ -36,9 +37,9 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-3">
             {!collapsed && (
-              <span className="text-lg font-bold text-gradient font-['Space_Grotesk']">OmniChat</span>
+              <span className="text-lg font-bold text-gradient font-['Space_Grotesk']">Voishper</span>
             )}
-            {collapsed && <span className="text-primary font-bold">O</span>}
+            {collapsed && <span className="text-primary font-bold">V</span>}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

@@ -16,7 +16,7 @@ const WidgetDemo = () => {
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-2xl mx-auto text-center py-20">
         <h1 className="text-3xl font-bold mb-4">Widget Preview</h1>
-        <p className="text-muted-foreground">This is how the OmniChat widget will appear on your website. Click the bubble in the bottom-right corner to open the chat.</p>
+        <p className="text-muted-foreground">This is how the Voishper widget will appear on your website. Click the bubble in the bottom-right corner to open the chat.</p>
       </div>
       <OmniWidget botId={botId} />
     </div>

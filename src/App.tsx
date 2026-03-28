@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Bots from "./pages/Bots.tsx";
 import Knowledge from "./pages/Knowledge.tsx";
 import Analytics from "./pages/Analytics.tsx";
+import Leads from "./pages/Leads.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import WidgetDemo from "./pages/WidgetDemo.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/bots" element={<Bots />} />
             <Route path="/knowledge" element={<Knowledge />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/leads" element={<Leads />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/widget/:botId" element={<WidgetDemo />} />
             <Route path="*" element={<NotFound />} />
