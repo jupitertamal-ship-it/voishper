@@ -1,21 +1,3 @@
-import { LayoutDashboard, Bot, BookOpen, BarChart3, Settings, LogOut } from 'lucide-react';
-import { NavLink } from '@/components/NavLink';
-import { useLocation } from 'react-router-dom';
-import { useAuth } from '@/lib/auth';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-  useSidebar,
-} from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-
 import { LayoutDashboard, Bot, BookOpen, BarChart3, Settings, LogOut, Mail } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';

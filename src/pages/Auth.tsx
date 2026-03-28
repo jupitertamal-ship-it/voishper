@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
-import { MessageSquare, Zap, Separator } from 'lucide-react';
+import { MessageSquare, Zap } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
