@@ -38,7 +38,7 @@ const SettingsPage = () => {
   };
 
   const embedCode = selectedBot
-    ? `<!-- OmniChat Widget -->\n<script src="${window.location.origin}/widget.js" data-bot-id="${selectedBot}"></script>`
+    ? `<!-- Voishper Widget -->\n<script src="${window.location.origin}/widget.js" data-bot-id="${selectedBot}"></script>`
     : 'Select a bot to generate embed code';
 
   const copyEmbed = () => {
