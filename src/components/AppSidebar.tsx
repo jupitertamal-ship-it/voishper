@@ -1,6 +1,5 @@
-import { LayoutDashboard, Bot, BookOpen, BarChart3, Settings, LogOut, Mail } from 'lucide-react';
+import { LayoutDashboard, Bot, Sparkles, BarChart3, Settings, LogOut, Mail } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
-import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import {
   Sidebar,
@@ -18,8 +17,8 @@ import { Button } from '@/components/ui/button';
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+  { title: 'Create Agent', url: '/create-agent', icon: Sparkles },
   { title: 'My Bots', url: '/bots', icon: Bot },
-  { title: 'Knowledge Base', url: '/knowledge', icon: BookOpen },
   { title: 'Leads', url: '/leads', icon: Mail },
   { title: 'Analytics', url: '/analytics', icon: BarChart3 },
   { title: 'Settings', url: '/settings', icon: Settings },
@@ -28,7 +27,6 @@ const navItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
-  const location = useLocation();
   const { signOut } = useAuth();
 
   return (
@@ -36,10 +34,14 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-3">
-            {!collapsed && (
-              <span className="text-lg font-bold text-gradient font-['Space_Grotesk']">Voishper</span>
+            {!collapsed ? (
+              <div className="flex items-center gap-2">
+                <img src="/images/voishper-logo.png" alt="Voishper" className="h-8 w-8 rounded-lg" />
+                <span className="text-lg font-bold text-gradient font-display">Voishper</span>
+              </div>
+            ) : (
+              <img src="/images/voishper-logo.png" alt="V" className="h-7 w-7 rounded-md" />
             )}
-            {collapsed && <span className="text-primary font-bold">V</span>}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

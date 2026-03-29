@@ -8,6 +8,7 @@ import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Bots from "./pages/Bots.tsx";
+import CreateAgent from "./pages/CreateAgent.tsx";
 import Knowledge from "./pages/Knowledge.tsx";
 import Analytics from "./pages/Analytics.tsx";
 import Leads from "./pages/Leads.tsx";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/bots" element={<Bots />} />
+            <Route path="/create-agent" element={<CreateAgent />} />
             <Route path="/knowledge" element={<Knowledge />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/leads" element={<Leads />} />

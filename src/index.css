@@ -6,49 +6,50 @@
 
 @layer base {
   :root {
-    --background: 220 25% 4%;
+    --background: 222 30% 5%;
     --foreground: 210 40% 96%;
 
-    --card: 220 20% 7%;
+    --card: 222 25% 8%;
     --card-foreground: 210 40% 96%;
 
-    --popover: 220 20% 7%;
+    --popover: 222 25% 8%;
     --popover-foreground: 210 40% 96%;
 
-    --primary: 185 100% 50%;
-    --primary-foreground: 220 25% 4%;
+    --primary: 200 100% 60%;
+    --primary-foreground: 222 30% 5%;
 
-    --secondary: 239 84% 67%;
+    --secondary: 280 80% 65%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 15% 13%;
-    --muted-foreground: 215 20% 55%;
-
-    --accent: 239 84% 67%;
+    --accent: 320 75% 60%;
     --accent-foreground: 210 40% 98%;
+
+    --muted: 222 18% 13%;
+    --muted-foreground: 215 20% 55%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 15% 16%;
-    --input: 220 15% 16%;
-    --ring: 185 100% 50%;
+    --border: 222 18% 16%;
+    --input: 222 18% 16%;
+    --ring: 200 100% 60%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 220 20% 6%;
+    --sidebar-background: 222 25% 6%;
     --sidebar-foreground: 210 40% 85%;
-    --sidebar-primary: 185 100% 50%;
-    --sidebar-primary-foreground: 220 25% 4%;
-    --sidebar-accent: 220 15% 12%;
+    --sidebar-primary: 200 100% 60%;
+    --sidebar-primary-foreground: 222 30% 5%;
+    --sidebar-accent: 222 18% 12%;
     --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 220 15% 14%;
-    --sidebar-ring: 185 100% 50%;
+    --sidebar-border: 222 18% 14%;
+    --sidebar-ring: 200 100% 60%;
 
-    --neon-cyan: 185 100% 50%;
-    --neon-indigo: 239 84% 67%;
-    --glass-bg: 220 20% 7%;
-    --glass-border: 220 15% 18%;
+    --neon-blue: 200 100% 60%;
+    --neon-purple: 280 80% 65%;
+    --neon-pink: 320 75% 60%;
+    --glass-bg: 222 25% 8%;
+    --glass-border: 222 18% 18%;
   }
 }
 
@@ -82,11 +83,11 @@
   }
 
   .plasma-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--secondary) / 0.15), hsl(var(--primary) / 0.05));
+    background: linear-gradient(135deg, hsl(var(--neon-blue) / 0.15), hsl(var(--neon-purple) / 0.15), hsl(var(--neon-pink) / 0.1));
   }
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    background-image: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-purple)), hsl(var(--neon-pink)));
   }
 }
