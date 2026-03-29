@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
-import { MessageSquare, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -34,8 +34,7 @@ const Auth = () => {
         navigate('/dashboard');
       } else {
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email, password,
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
@@ -73,12 +72,10 @@ const Auth = () => {
       >
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="p-2 rounded-xl bg-primary/10 neon-border">
-              <MessageSquare className="h-8 w-8 text-primary" />
-            </div>
+            <img src="/images/voishper-logo.png" alt="Voishper" className="h-16 w-16 rounded-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gradient font-['Space_Grotesk']">Voishper AI</h1>
-          <p className="text-muted-foreground mt-2">AI-powered customer support platform</p>
+          <h1 className="text-3xl font-bold text-gradient font-display">Voishper AI</h1>
+          <p className="text-muted-foreground mt-2">AI Voice & Chat Solutions</p>
         </div>
 
         <Card className="glass-panel neon-border">
@@ -89,7 +86,6 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Google Sign-In */}
             <Button
               variant="outline"
               className="w-full gap-2 h-11 bg-muted/30 border-border/50 hover:bg-muted/50"
@@ -119,40 +115,18 @@ const Auth = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="email"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-muted/50 border-border/50"
-              />
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="bg-muted/50 border-border/50"
-              />
-              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+              <Input type="email" placeholder="you@company.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-muted/50 border-border/50" />
+              <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="bg-muted/50 border-border/50" />
+              <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                 ) : (
-                  <>
-                    <Zap className="h-4 w-4" />
-                    {isLogin ? 'Sign In' : 'Sign Up'}
-                  </>
+                  <><Zap className="h-4 w-4" />{isLogin ? 'Sign In' : 'Sign Up'}</>
                 )}
               </Button>
             </form>
             <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
+              <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
               </button>
             </div>
