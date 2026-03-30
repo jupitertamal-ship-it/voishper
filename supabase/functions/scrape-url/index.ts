@@ -6,64 +6,92 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function cleanHtml(html: string): string {
+  return html
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { url, bot_id } = await req.json();
-    if (!url || !bot_id) {
-      return new Response(JSON.stringify({ error: "url and bot_id required" }), {
+    const { url, bot_id, preview_only } = await req.json();
+    if (!url) {
+      return new Response(JSON.stringify({ error: "url required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-    
+    let formattedUrl = url.trim();
+    if (!formattedUrl.startsWith("http://") && !formattedUrl.startsWith("https://")) {
+      formattedUrl = `https://${formattedUrl}`;
+    }
+
     let content = "";
     let sourceName = url;
 
-    if (apiKey) {
-      // Use Firecrawl for scraping
-      let formattedUrl = url.trim();
-      if (!formattedUrl.startsWith("http://") && !formattedUrl.startsWith("https://")) {
-        formattedUrl = `https://${formattedUrl}`;
-      }
-
-      const response = await fetch("https://api.firecrawl.dev/v1/scrape", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          url: formattedUrl,
-          formats: ["markdown"],
-          onlyMainContent: true,
-        }),
+    // Use Jina Reader API for clean content extraction
+    try {
+      const jinaResp = await fetch(`https://r.jina.ai/${formattedUrl}`, {
+        headers: { Accept: "text/plain" },
       });
+      if (jinaResp.ok) {
+        content = await jinaResp.text();
+        // Extract title from first line if markdown
+        const firstLine = content.split("\n")[0];
+        if (firstLine.startsWith("# ")) {
+          sourceName = firstLine.replace("# ", "").trim();
+        }
+      }
+    } catch {
+      // Jina failed, fallback to direct fetch
+    }
 
-      const data = await response.json();
-      if (!response.ok) {
-        return new Response(JSON.stringify({ success: false, error: data.error || "Scrape failed" }), {
-          status: response.status,
+    // Fallback: direct fetch + HTML cleaning
+    if (!content) {
+      try {
+        const resp = await fetch(formattedUrl);
+        const html = await resp.text();
+        content = cleanHtml(html);
+        // Try to extract title
+        const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
+        if (titleMatch) sourceName = titleMatch[1].trim();
+      } catch (e) {
+        return new Response(JSON.stringify({ error: "Failed to fetch URL" }), {
+          status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+    }
 
-      content = data.data?.markdown || data.markdown || "";
-      sourceName = data.data?.metadata?.title || url;
-    } else {
-      // Fallback: basic fetch
-      const resp = await fetch(url);
-      const html = await resp.text();
-      // Strip HTML tags for basic text extraction
-      content = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .substring(0, 50000);
+    content = content.substring(0, 100000);
+
+    // If preview_only, return content without storing
+    if (preview_only) {
+      return new Response(JSON.stringify({
+        success: true,
+        source_name: sourceName,
+        content_text: content,
+        content_length: content.length,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!bot_id) {
+      return new Response(JSON.stringify({ error: "bot_id required for storage" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Store in knowledge_items
@@ -75,12 +103,16 @@ serve(async (req) => {
       bot_id,
       type: "url",
       source_name: sourceName,
-      content_text: content.substring(0, 100000),
+      content_text: content,
     });
 
     if (error) throw error;
 
-    return new Response(JSON.stringify({ success: true, source_name: sourceName, content_length: content.length }), {
+    return new Response(JSON.stringify({
+      success: true,
+      source_name: sourceName,
+      content_length: content.length,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
