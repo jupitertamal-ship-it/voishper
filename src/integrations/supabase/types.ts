@@ -53,32 +53,68 @@ export type Database = {
         Row: {
           colors: Json | null
           created_at: string
+          domain_whitelist: string[] | null
           greeting_message: string | null
           id: string
           name: string
           system_prompt: string | null
           updated_at: string
           user_id: string
+          website_url: string | null
+          whatsapp_number: string | null
         }
         Insert: {
           colors?: Json | null
           created_at?: string
+          domain_whitelist?: string[] | null
           greeting_message?: string | null
           id?: string
           name?: string
           system_prompt?: string | null
           updated_at?: string
           user_id: string
+          website_url?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
           colors?: Json | null
           created_at?: string
+          domain_whitelist?: string[] | null
           greeting_message?: string | null
           id?: string
           name?: string
           system_prompt?: string | null
           updated_at?: string
           user_id?: string
+          website_url?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      cache_responses: {
+        Row: {
+          answer_text: string
+          chatbot_id: string
+          created_at: string
+          id: string
+          query_hash: string
+          query_text: string
+        }
+        Insert: {
+          answer_text: string
+          chatbot_id: string
+          created_at?: string
+          id?: string
+          query_hash: string
+          query_text: string
+        }
+        Update: {
+          answer_text?: string
+          chatbot_id?: string
+          created_at?: string
+          id?: string
+          query_hash?: string
+          query_text?: string
         }
         Relationships: []
       }
