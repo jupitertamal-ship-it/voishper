@@ -10,19 +10,28 @@ type Message = { role: 'user' | 'assistant'; content: string };
 type WidgetProps = {
   botId: string;
   preview?: boolean;
+  primaryColor?: string;
+  secondaryColor?: string;
 };
 
-// Language detection heuristic
+// ─── Customization ───────────────────────────────────────
+const WIDGET_DEFAULTS = {
+  primary: '#6366F1',   // Indigo
+  secondary: '#06B6D4', // Cyan
+};
+
 function detectLang(text: string): 'bn' | 'en' | 'banglish' {
-  const banglaRange = /[\u0980-\u09FF]/;
-  if (banglaRange.test(text)) return 'bn';
-  // Banglish patterns
-  const banglishWords = /\b(ami|tumi|kemon|achen|kothay|bolte|holo|kore|nai|ache|ki|ta|ar|thik|ase)\b/i;
-  if (banglishWords.test(text)) return 'banglish';
+  if (/[\u0980-\u09FF]/.test(text)) return 'bn';
+  if (/\b(ami|tumi|kemon|achen|kothay|bolte|holo|kore|nai|ache|ki|ta|ar|thik|ase)\b/i.test(text)) return 'banglish';
   return 'en';
 }
 
-export function OmniWidget({ botId, preview = false }: WidgetProps) {
+export function OmniWidget({
+  botId,
+  preview = false,
+  primaryColor = WIDGET_DEFAULTS.primary,
+  secondaryColor = WIDGET_DEFAULTS.secondary,
+}: WidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -36,13 +45,18 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
   const [showWhatsapp, setShowWhatsapp] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
+  const [bubbleReady, setBubbleReady] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
+  const gradient = `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
+
   useEffect(() => {
-    // Check Web Speech API support
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     setSpeechSupported(!!SpeechRecognition);
+    // Delay bubble entrance
+    const t = setTimeout(() => setBubbleReady(true), 300);
+    return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
@@ -70,38 +84,26 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const colors = botConfig?.colors || { bubble_color: '#00F2FF', header_color: '#6366F1', text_color: '#FFFFFF' };
-
   const toggleVoice = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) return;
-
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
       return;
     }
-
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
     recognition.continuous = false;
     recognition.interimResults = true;
-
-    // Detect language from existing conversation or default
     const lastMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
-    const lang = detectLang(lastMsg);
-    recognition.lang = lang === 'bn' ? 'bn-BD' : 'en-US';
-
+    recognition.lang = detectLang(lastMsg) === 'bn' ? 'bn-BD' : 'en-US';
     recognition.onresult = (event: any) => {
-      const transcript = Array.from(event.results)
-        .map((r: any) => r[0].transcript)
-        .join('');
+      const transcript = Array.from(event.results).map((r: any) => r[0].transcript).join('');
       setInput(transcript);
     };
-
     recognition.onend = () => setIsListening(false);
     recognition.onerror = () => setIsListening(false);
-
     recognition.start();
     setIsListening(true);
   };
@@ -122,11 +124,7 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({
-          messages: newMessages,
-          bot_id: botId,
-          origin: window.location.origin,
-        }),
+        body: JSON.stringify({ messages: newMessages, bot_id: botId, origin: window.location.origin }),
       });
 
       if (resp.status === 403) {
@@ -134,22 +132,15 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
         setLoading(false);
         return;
       }
-      if (resp.status === 429) {
-        setMessages([...newMessages, { role: 'assistant', content: 'Too many requests. Please try again later.' }]);
-        setLoading(false);
-        return;
-      }
-      if (resp.status === 402) {
-        setMessages([...newMessages, { role: 'assistant', content: 'Service temporarily unavailable.' }]);
+      if (resp.status === 429 || resp.status === 402) {
+        setMessages([...newMessages, { role: 'assistant', content: '⏳ Our system is under brief maintenance. Please try again in a moment.' }]);
         setLoading(false);
         return;
       }
 
-      // Get WhatsApp number from response header
       const wpNum = resp.headers.get('X-Whatsapp-Number');
       if (wpNum) setWhatsappNumber(wpNum);
-
-      if (!resp.ok || !resp.body) throw new Error('Failed to stream');
+      if (!resp.ok || !resp.body) throw new Error('Failed');
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
@@ -159,7 +150,6 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
         const { done, value } = await reader.read();
         if (done) break;
         textBuffer += decoder.decode(value, { stream: true });
-
         let newlineIndex: number;
         while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
           let line = textBuffer.slice(0, newlineIndex);
@@ -183,7 +173,7 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
         }
       }
     } catch {
-      setMessages([...newMessages, { role: 'assistant', content: "I'm having trouble connecting. Would you like to leave your contact info?" }]);
+      setMessages([...newMessages, { role: 'assistant', content: "⏳ Our system is under brief maintenance. Please try again in a moment." }]);
       setShowHandoff(true);
     }
     setLoading(false);
@@ -192,14 +182,9 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
   const submitLead = async () => {
     if (!leadName || !leadEmail) return;
     const transcript = messages.map(m => `${m.role}: ${m.content}`).join('\n');
-    await supabase.from('leads').insert({
-      bot_id: botId,
-      name: leadName,
-      email: leadEmail,
-      chat_transcript: transcript,
-    });
+    await supabase.from('leads').insert({ bot_id: botId, name: leadName, email: leadEmail, chat_transcript: transcript });
     setShowHandoff(false);
-    setMessages([...messages, { role: 'assistant', content: `Thanks ${leadName}! A team member will reach out to ${leadEmail} shortly.` }]);
+    setMessages([...messages, { role: 'assistant', content: `Thanks ${leadName}! We'll reach out to ${leadEmail} shortly.` }]);
     setLeadName('');
     setLeadEmail('');
   };
@@ -211,71 +196,87 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
 
   return (
     <>
-      {/* Greeting popup */}
+      {/* Greeting toast */}
       <AnimatePresence>
         {showGreeting && !isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-50 max-w-xs p-4 rounded-xl shadow-xl border border-border/50 bg-card"
+            className="fixed bottom-24 right-4 sm:right-6 z-50 max-w-[260px] p-3.5 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-xl"
+            style={{ background: 'rgba(15,15,25,0.92)' }}
           >
-            <button onClick={() => setShowGreeting(false)} className="absolute top-2 right-2 text-muted-foreground hover:text-foreground">
+            <button onClick={() => setShowGreeting(false)} className="absolute top-2 right-2 text-white/40 hover:text-white/80">
               <X className="h-3 w-3" />
             </button>
-            <p className="text-sm pr-4">{botConfig?.greeting_message || 'Hi! Need help?'}</p>
-            <button onClick={() => { setShowGreeting(false); setIsOpen(true); }} className="text-xs text-primary mt-2 hover:underline">
+            <p className="text-xs text-white/80 pr-4 leading-relaxed">{botConfig?.greeting_message || 'Hi! Need help?'}</p>
+            <button onClick={() => { setShowGreeting(false); setIsOpen(true); }} className="text-[10px] mt-2 hover:underline" style={{ color: secondaryColor }}>
               Chat with us →
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Chat Panel */}
+      {/* ─── Chat Window ─── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 24, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-8rem)] rounded-2xl overflow-hidden shadow-2xl border border-border/50 flex flex-col bg-card"
+            exit={{ opacity: 0, y: 24, scale: 0.92 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="fixed bottom-[88px] right-3 sm:right-6 z-50 w-[340px] sm:w-[350px] max-w-[calc(100vw-1.5rem)] h-[480px] max-h-[calc(100vh-7rem)] rounded-2xl overflow-hidden flex flex-col"
+            style={{
+              background: 'rgba(12,12,20,0.96)',
+              boxShadow: `0 8px 40px rgba(0,0,0,0.5), 0 0 60px ${primaryColor}15`,
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
           >
             {/* Header */}
-            <div className="p-4 flex items-center justify-between shrink-0" style={{ backgroundColor: colors.header_color }}>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <MessageSquare className="h-4 w-4" style={{ color: colors.text_color }} />
+            <div
+              className="px-4 py-3 flex items-center justify-between shrink-0"
+              style={{ background: gradient }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                  <MessageSquare className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <span className="font-medium text-sm block" style={{ color: colors.text_color }}>{botConfig?.name || 'Chat'}</span>
-                  <span className="text-[10px] opacity-70" style={{ color: colors.text_color }}>● Online</span>
+                  <span className="font-semibold text-sm text-white block leading-tight">{botConfig?.name || 'AI Assistant'}</span>
+                  <span className="text-[10px] text-white/60 flex items-center gap-1">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                    Online
+                  </span>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="opacity-70 hover:opacity-100 transition-opacity">
-                <X className="h-4 w-4" style={{ color: colors.text_color }} />
+              <button onClick={() => setIsOpen(false)} className="text-white/60 hover:text-white transition-colors">
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2.5 scrollbar-thin">
               {messages.length === 0 && (
-                <div className="text-center text-muted-foreground text-sm py-8">
-                  <div className="h-12 w-12 rounded-full mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: colors.bubble_color + '20' }}>
-                    <MessageSquare className="h-6 w-6" style={{ color: colors.bubble_color }} />
+                <div className="text-center py-10 px-4">
+                  <div
+                    className="h-11 w-11 rounded-full mx-auto mb-3 flex items-center justify-center"
+                    style={{ background: `${secondaryColor}18` }}
+                  >
+                    <MessageSquare className="h-5 w-5" style={{ color: secondaryColor }} />
                   </div>
-                  {botConfig?.greeting_message || 'Hi! How can I help?'}
+                  <p className="text-white/50 text-xs leading-relaxed">{botConfig?.greeting_message || 'Hi! How can I help you today?'}</p>
                 </div>
               )}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
-                      msg.role === 'user' ? 'rounded-br-md' : 'rounded-bl-md'
+                    className={`max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-relaxed ${
+                      msg.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'
                     }`}
                     style={
                       msg.role === 'user'
-                        ? { backgroundColor: colors.bubble_color, color: colors.text_color }
-                        : { backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--foreground))' }
+                        ? { background: gradient, color: '#fff' }
+                        : { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.88)' }
                     }
                   >
                     {msg.role === 'assistant' ? (
@@ -290,11 +291,17 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
-                    <div className="flex gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="flex gap-1">
+                      {[0, 1, 2].map(i => (
+                        <motion.div
+                          key={i}
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: secondaryColor }}
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -304,41 +311,41 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
 
             {/* WhatsApp CTA */}
             {showWhatsapp && whatsappNumber && (
-              <div className="px-4 pb-2">
+              <div className="px-3 pb-2">
                 <button
                   onClick={openWhatsApp}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
                 >
-                  <Phone className="h-4 w-4" /> Talk to a human on WhatsApp
+                  <Phone className="h-3.5 w-3.5" /> Talk to a human on WhatsApp
                 </button>
               </div>
             )}
 
-            {/* Handoff Form */}
+            {/* Lead form */}
             {showHandoff && !showWhatsapp && (
-              <div className="p-4 border-t border-border/50 bg-muted/30 space-y-2">
-                <p className="text-xs text-muted-foreground">Leave your info and we'll get back to you:</p>
-                <input className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-sm" placeholder="Name" value={leadName} onChange={e => setLeadName(e.target.value)} />
-                <input className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-sm" placeholder="Email" type="email" value={leadEmail} onChange={e => setLeadEmail(e.target.value)} />
-                <button onClick={submitLead} className="w-full py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: colors.bubble_color, color: colors.text_color }}>Submit</button>
+              <div className="p-3 border-t border-white/5 space-y-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <p className="text-[10px] text-white/40">Leave your info and we'll get back to you:</p>
+                <input className="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/20" placeholder="Name" value={leadName} onChange={e => setLeadName(e.target.value)} />
+                <input className="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/20" placeholder="Email" type="email" value={leadEmail} onChange={e => setLeadEmail(e.target.value)} />
+                <button onClick={submitLead} className="w-full py-1.5 rounded-lg text-xs font-medium text-white" style={{ background: gradient }}>Submit</button>
               </div>
             )}
 
-            {/* Input */}
+            {/* Input bar */}
             {!showHandoff && (
-              <div className="p-3 border-t border-border/50 shrink-0">
-                <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2 items-center">
+              <div className="px-3 py-2.5 border-t border-white/5 shrink-0">
+                <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-1.5 items-center">
                   {speechSupported && (
                     <button
                       type="button"
                       onClick={toggleVoice}
-                      className={`p-2 rounded-lg transition-all ${isListening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'text-muted-foreground hover:text-foreground'}`}
+                      className={`p-1.5 rounded-lg transition-all ${isListening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'text-white/30 hover:text-white/60'}`}
                     >
                       {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                     </button>
                   )}
                   <input
-                    className="flex-1 px-3 py-2 rounded-lg bg-muted/50 border border-border/30 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white placeholder:text-white/25 focus:outline-none focus:border-white/15"
                     placeholder={isListening ? 'Listening...' : 'Type a message...'}
                     value={input}
                     onChange={e => setInput(e.target.value)}
@@ -346,35 +353,52 @@ export function OmniWidget({ botId, preview = false }: WidgetProps) {
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    className="p-2 rounded-lg transition-colors disabled:opacity-40"
-                    style={{ backgroundColor: colors.bubble_color, color: colors.text_color }}
+                    className="p-2 rounded-xl transition-all disabled:opacity-30"
+                    style={{ background: gradient }}
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="h-3.5 w-3.5 text-white" />
                   </button>
                 </form>
+                {/* Footer branding */}
+                <p className="text-center text-[8px] text-white/20 mt-1.5 tracking-wide">
+                  Powered by <span className="text-white/30 font-medium">Voishper AI</span> | Created by <span className="text-white/30 font-medium">Muntasir</span>
+                </p>
               </div>
             )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Floating Bubble */}
-      <motion.div
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer shadow-lg"
-        style={{
-          backgroundColor: colors.bubble_color,
-          boxShadow: `0 0 20px ${colors.bubble_color}40, 0 0 40px ${colors.bubble_color}20`,
-        }}
-      >
-        {isOpen ? (
-          <X className="h-6 w-6" style={{ color: colors.text_color }} />
-        ) : (
-          <MessageSquare className="h-6 w-6" style={{ color: colors.text_color }} />
+      {/* ─── Floating Bubble (FAB) ─── */}
+      <AnimatePresence>
+        {bubbleReady && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 25, delay: 0.1 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
+            className="fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer"
+            style={{
+              background: gradient,
+              boxShadow: `0 4px 24px ${primaryColor}50, 0 0 48px ${secondaryColor}20`,
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <X className="h-5 w-5 text-white" />
+                </motion.div>
+              ) : (
+                <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <MessageSquare className="h-5 w-5 text-white" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
     </>
   );
 }
