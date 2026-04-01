@@ -113,18 +113,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-hidden relative">
+      <div className="wave-bg" />
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 plasma-gradient opacity-20" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-secondary/5 blur-[100px]" />
-        <div className="absolute top-1/2 right-0 w-64 h-64 rounded-full bg-accent/5 blur-[100px]" />
       </div>
 
       {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
           <img src="/images/voishper-logo.png" alt="Voishper" className="h-10 w-10 rounded-lg" />
-          <span className="text-lg font-bold text-gradient font-display">Voishper AI</span>
+          <span className="text-lg font-bold text-gradient font-display">Voishper</span>
         </div>
         <div className="flex gap-3">
           <Button variant="ghost" onClick={() => navigate('/auth')}>Sign In</Button>
@@ -138,7 +136,7 @@ const Index = () => {
       <section className="relative z-10 max-w-4xl mx-auto px-6 pt-16 md:pt-24 pb-12 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-6">
-            <Zap className="h-3.5 w-3.5" /> AI Voice & Chat Solutions
+            <Zap className="h-3.5 w-3.5" /> Voice & Chat Solutions
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 font-display">
             Turn your website into a
@@ -209,7 +207,7 @@ const Index = () => {
       <section className="relative z-10 max-w-4xl mx-auto px-6 pb-24">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel neon-border rounded-2xl p-10 md:p-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Ready to give your website a voice?</h2>
-          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">Join thousands of businesses already using Voishper AI to support customers 24/7.</p>
+          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">Join thousands of businesses already using Voishper to support customers 24/7.</p>
           <Button size="lg" onClick={() => navigate('/auth')} className="gap-2 text-base px-10 h-14 text-lg neon-glow">
             Get Started <ArrowRight className="h-5 w-5" />
           </Button>
@@ -217,7 +215,7 @@ const Index = () => {
       </section>
 
       <footer className="relative z-10 border-t border-border/30 py-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Voishper AI. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Voishper. All rights reserved.</p>
       </footer>
 
       {/* Demo Overlay */}

@@ -74,8 +74,8 @@ const Auth = () => {
           <div className="inline-flex items-center gap-2 mb-4">
             <img src="/images/voishper-logo.png" alt="Voishper" className="h-16 w-16 rounded-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gradient font-display">Voishper AI</h1>
-          <p className="text-muted-foreground mt-2">AI Voice & Chat Solutions</p>
+          <h1 className="text-3xl font-bold text-gradient font-display">Voishper</h1>
+          <p className="text-muted-foreground mt-2">Voice & Chat Solutions</p>
         </div>
 
         <Card className="glass-panel neon-border">

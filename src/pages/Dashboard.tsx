@@ -59,7 +59,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-bold font-display">Dashboard</h1>
-            <p className="text-muted-foreground">Your Voishper AI command center.</p>
+            <p className="text-muted-foreground">Your Voishper command center.</p>
           </div>
           <Button onClick={() => navigate('/create-agent')} className="gap-2 neon-glow">
             <Sparkles className="h-4 w-4" /> Create Agent
@@ -204,7 +204,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 plasma-gradient opacity-30" />
               <CardContent className="py-8 relative z-10 text-center">
                 <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" style={{ filter: 'drop-shadow(0 0 12px hsl(var(--primary) / 0.5))' }} />
-                <h3 className="text-lg font-bold font-display mb-2">Get Started with Voishper AI</h3>
+                <h3 className="text-lg font-bold font-display mb-2">Get Started with Voishper</h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
                   Create your first AI agent in under a minute. Paste your website URL and we'll handle everything.
                 </p>

@@ -130,7 +130,7 @@ const CreateAgent = () => {
   };
 
   const embedCode = createdBotId
-    ? `<!-- Voishper AI Widget -->\n<script>\n(function(){\n  var s=document.createElement('script');\n  s.src='${window.location.origin}/widget.js';\n  s.setAttribute('data-bot-id','${createdBotId}');\n  s.setAttribute('data-host','${window.location.origin}');\n  s.async=true;\n  document.body.appendChild(s);\n})();\n</script>`
+    ? `<!-- Voishper Widget -->\n<script>\n(function(){\n  var s=document.createElement('script');\n  s.src='${window.location.origin}/widget.js';\n  s.setAttribute('data-bot-id','${createdBotId}');\n  s.setAttribute('data-host','${window.location.origin}');\n  s.async=true;\n  document.body.appendChild(s);\n})();\n</script>`
     : '';
 
   const copyEmbed = () => {
