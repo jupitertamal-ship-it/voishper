@@ -120,9 +120,7 @@ serve(async (req) => {
     }
 
     // Store in knowledge_items
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     const { error } = await supabase.from("knowledge_items").insert({
       bot_id,
