@@ -209,7 +209,7 @@ const Index = () => {
       <section className="relative z-10 max-w-4xl mx-auto px-6 pb-24">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel neon-border rounded-2xl p-10 md:p-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Ready to give your website a voice?</h2>
-          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">Join thousands of businesses already using Voishper AI to support customers 24/7.</p>
+          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">Join thousands of businesses already using Voishper to support customers 24/7.</p>
           <Button size="lg" onClick={() => navigate('/auth')} className="gap-2 text-base px-10 h-14 text-lg neon-glow">
             Get Started <ArrowRight className="h-5 w-5" />
           </Button>
