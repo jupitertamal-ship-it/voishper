@@ -138,7 +138,7 @@ const Index = () => {
       <section className="relative z-10 max-w-4xl mx-auto px-6 pt-16 md:pt-24 pb-12 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-6">
-            <Zap className="h-3.5 w-3.5" /> AI Voice & Chat Solutions
+            <Zap className="h-3.5 w-3.5" /> Voice & Chat Solutions
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 font-display">
             Turn your website into a

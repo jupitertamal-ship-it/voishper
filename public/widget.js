@@ -1,4 +1,4 @@
-// Voishper AI Widget Loader - Universal Embed Script
+// Voishper Widget Loader - Universal Embed Script
 (function() {
   var script = document.currentScript || document.querySelector('script[data-bot-id]');
   if (!script) return;

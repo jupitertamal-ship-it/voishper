@@ -204,7 +204,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 plasma-gradient opacity-30" />
               <CardContent className="py-8 relative z-10 text-center">
                 <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" style={{ filter: 'drop-shadow(0 0 12px hsl(var(--primary) / 0.5))' }} />
-                <h3 className="text-lg font-bold font-display mb-2">Get Started with Voishper AI</h3>
+                <h3 className="text-lg font-bold font-display mb-2">Get Started with Voishper</h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
                   Create your first AI agent in under a minute. Paste your website URL and we'll handle everything.
                 </p>

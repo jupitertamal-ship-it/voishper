@@ -361,7 +361,7 @@ export function OmniWidget({
                 </form>
                 {/* Footer branding */}
                 <p className="text-center text-[8px] text-white/20 mt-1.5 tracking-wide">
-                  Powered by <span className="text-white/30 font-medium">Voishper AI</span> | Created by <span className="text-white/30 font-medium">Muntasir</span>
+                  Powered by <span className="text-white/30 font-medium">Voishper</span> | Created by <span className="text-white/30 font-medium">Muntasir</span>
                 </p>
               </div>
             )}
