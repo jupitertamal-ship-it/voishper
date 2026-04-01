@@ -84,7 +84,14 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = bot.system_prompt || "You are a helpful assistant.";
+    const basePrompt = bot.system_prompt || "You are a helpful assistant.";
+    const systemPrompt = basePrompt + `\n\nIMPORTANT LANGUAGE RULES:
+- You MUST detect the user's language and ALWAYS respond in that same language.
+- If the user writes in Bengali (বাংলা), respond entirely in fluent Bengali, even if the knowledge base is in English. Translate relevant information.
+- If the user writes in Banglish (Bengali in English letters), respond in Bengali script (বাংলা).
+- When you don't have information, respond in the user's language. For Bengali users say: "এই তথ্যটি আমার কাছে নেই, দয়া করে আপনার ফোন নম্বর দিন যাতে আমাদের টিম আপনার সাথে যোগাযোগ করতে পারে।"
+- For English users say: "I don't have that information. Please share your phone number so our team can contact you."
+- Never mix languages in a single response unless the user does.`;
 
     // Fetch knowledge items for RAG context
     const { data: knowledge } = await supabase

@@ -122,7 +122,7 @@ serve(async (req) => {
     // Store in knowledge_items
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { error } = await supabase.from("knowledge_items").insert({
+    const { error } = await adminClient.from("knowledge_items").insert({
       bot_id,
       type: "url",
       source_name: sourceName,
