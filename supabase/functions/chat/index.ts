@@ -104,7 +104,7 @@ serve(async (req) => {
     if (knowledge && knowledge.length > 0) {
       ragContext = "\n\n--- KNOWLEDGE BASE ---\n" +
         knowledge.map((k) => `[${k.source_name}]: ${(k.content_text || "").substring(0, 4000)}`).join("\n\n") +
-        "\n--- END KNOWLEDGE BASE ---\n\nAnswer ONLY based on the knowledge base above. If the answer is not in the knowledge base, say you don't have that information.";
+        "\n--- END KNOWLEDGE BASE ---\n\nAnswer based on the knowledge base above. If the answer is not in the knowledge base, provide the 'I don't have information' fallback in the user's language as instructed.";
     }
 
     // Add handoff instruction
