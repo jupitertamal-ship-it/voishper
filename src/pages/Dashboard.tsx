@@ -59,7 +59,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-bold font-display">Dashboard</h1>
-            <p className="text-muted-foreground">Your Voishper AI command center.</p>
+            <p className="text-muted-foreground">Your Voishper command center.</p>
           </div>
           <Button onClick={() => navigate('/create-agent')} className="gap-2 neon-glow">
             <Sparkles className="h-4 w-4" /> Create Agent
