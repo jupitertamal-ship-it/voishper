@@ -217,7 +217,7 @@ const Index = () => {
       </section>
 
       <footer className="relative z-10 border-t border-border/30 py-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Voishper AI. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Voishper. All rights reserved.</p>
       </footer>
 
       {/* Demo Overlay */}
