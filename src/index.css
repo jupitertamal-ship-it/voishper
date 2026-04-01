@@ -90,4 +90,49 @@
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-purple)), hsl(var(--neon-pink)));
   }
+
+  @keyframes wave-flow {
+    0% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-25%) translateY(-8px); }
+    100% { transform: translateX(-50%) translateY(0); }
+  }
+
+  .wave-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .wave-bg::before,
+  .wave-bg::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 200px;
+    width: 200%;
+    background: linear-gradient(90deg,
+      hsl(var(--neon-blue) / 0.06),
+      hsl(var(--neon-purple) / 0.08),
+      hsl(var(--neon-pink) / 0.06),
+      hsl(var(--neon-blue) / 0.06)
+    );
+    border-radius: 40%;
+    animation: wave-flow 12s ease-in-out infinite;
+  }
+
+  .wave-bg::before {
+    top: 20%;
+    filter: blur(60px);
+  }
+
+  .wave-bg::after {
+    bottom: 15%;
+    filter: blur(80px);
+    animation-delay: -6s;
+    animation-duration: 16s;
+    opacity: 0.7;
+  }
 }

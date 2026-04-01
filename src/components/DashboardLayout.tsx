@@ -8,7 +8,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <RequireAuth>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="min-h-screen flex w-full relative">
+          <div className="wave-bg" />
           <AppSidebar />
           <div className="flex-1 flex flex-col min-w-0">
             <header className="h-14 flex items-center border-b border-border/50 px-4 glass-panel sticky top-0 z-30">
