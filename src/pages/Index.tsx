@@ -124,7 +124,7 @@ const Index = () => {
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
           <img src="/images/voishper-logo.png" alt="Voishper" className="h-10 w-10 rounded-lg" />
-          <span className="text-lg font-bold text-gradient font-display">Voishper AI</span>
+          <span className="text-lg font-bold text-gradient font-display">Voishper</span>
         </div>
         <div className="flex gap-3">
           <Button variant="ghost" onClick={() => navigate('/auth')}>Sign In</Button>
