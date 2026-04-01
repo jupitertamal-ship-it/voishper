@@ -27,7 +27,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Authentication required" }), {
@@ -120,11 +120,9 @@ serve(async (req) => {
     }
 
     // Store in knowledge_items
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { error } = await supabase.from("knowledge_items").insert({
+    const { error } = await adminClient.from("knowledge_items").insert({
       bot_id,
       type: "url",
       source_name: sourceName,
