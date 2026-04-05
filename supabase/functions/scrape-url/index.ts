@@ -147,6 +147,14 @@ serve(async (req) => {
 
     if (error) throw error;
 
+    // Increment scrape count
+    if (userPlan) {
+      await adminClient.from("user_plans").update({
+        scrape_count: (userPlan.scrape_count || 0) + 1,
+        updated_at: new Date().toISOString(),
+      }).eq("user_id", user.id);
+    }
+
     return new Response(JSON.stringify({
       success: true,
       source_name: sourceName,
