@@ -48,11 +48,28 @@ serve(async (req) => {
       });
     }
 
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check ban & plan limits
+    const { data: userPlan } = await adminClient.from("user_plans").select("*").eq("user_id", user.id).maybeSingle();
+    if (userPlan?.is_banned) {
+      return new Response(JSON.stringify({ error: "Your account has been suspended." }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { url, bot_id, preview_only } = await req.json();
     if (!url) {
       return new Response(JSON.stringify({ error: "url required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check scrape limit for free users (only for non-preview)
+    if (!preview_only && userPlan && userPlan.plan_status === "free" && userPlan.scrape_count >= 1) {
+      return new Response(JSON.stringify({ error: "Free plan limit reached. Upgrade to Premium for unlimited scraping." }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -120,7 +137,6 @@ serve(async (req) => {
     }
 
     // Store in knowledge_items
-    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     const { error } = await adminClient.from("knowledge_items").insert({
       bot_id,
@@ -130,6 +146,14 @@ serve(async (req) => {
     });
 
     if (error) throw error;
+
+    // Increment scrape count
+    if (userPlan) {
+      await adminClient.from("user_plans").update({
+        scrape_count: (userPlan.scrape_count || 0) + 1,
+        updated_at: new Date().toISOString(),
+      }).eq("user_id", user.id);
+    }
 
     return new Response(JSON.stringify({
       success: true,

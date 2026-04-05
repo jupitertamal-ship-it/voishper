@@ -9,6 +9,8 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Globe, FileText, Trash2, Upload, Link, Loader2 } from 'lucide-react';
+import { useUserPlan } from '@/hooks/use-user-plan';
+import { UpgradeDialog } from '@/components/UpgradeDialog';
 
 type KnowledgeItem = {
   id: string;
@@ -31,6 +33,8 @@ const Knowledge = () => {
   const [scraping, setScraping] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { canScrape, remainingScrapes, plan, refresh: refreshPlan } = useUserPlan();
 
   useEffect(() => {
     if (!user) return;
@@ -48,6 +52,10 @@ const Knowledge = () => {
 
   const scrapeUrl = async () => {
     if (!url || !selectedBot) return;
+    if (!canScrape) {
+      setShowUpgrade(true);
+      return;
+    }
     setScraping(true);
     try {
       const { data, error } = await supabase.functions.invoke('scrape-url', {
@@ -56,6 +64,7 @@ const Knowledge = () => {
       if (error) throw error;
       toast({ title: 'URL scraped successfully!' });
       setUrl('');
+      refreshPlan();
       // Refresh items
       const { data: updated } = await supabase.from('knowledge_items').select('*').eq('bot_id', selectedBot).order('created_at', { ascending: false });
       setItems(updated || []);
@@ -188,6 +197,7 @@ const Knowledge = () => {
           </>
         )}
       </div>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} feature="আরো ওয়েবসাইট স্ক্র্যাপিং" />
     </DashboardLayout>
   );
 };

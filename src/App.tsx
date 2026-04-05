@@ -14,6 +14,8 @@ import Analytics from "./pages/Analytics.tsx";
 import Leads from "./pages/Leads.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import WidgetDemo from "./pages/WidgetDemo.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import Billing from "./pages/Billing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/leads" element={<Leads />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/widget/:botId" element={<WidgetDemo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

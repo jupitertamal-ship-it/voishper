@@ -2,11 +2,13 @@ import { ReactNode } from 'react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { RequireAuth } from '@/lib/auth';
+import { BanGuard } from '@/components/BanGuard';
 import { Menu } from 'lucide-react';
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <RequireAuth>
+      <BanGuard>
       <SidebarProvider>
         <div className="min-h-screen flex w-full relative">
           <div className="wave-bg" />
@@ -23,6 +25,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </SidebarProvider>
+      </BanGuard>
     </RequireAuth>
   );
 }
