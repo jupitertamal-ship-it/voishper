@@ -204,6 +204,18 @@ serve(async (req) => {
               console.error("Cache error:", e);
             }
           }
+          // Increment message count for bot owner
+          try {
+            await supabase.rpc('increment_message_count_raw', { owner_id: bot.user_id });
+          } catch {
+            // Fallback: direct update
+            if (ownerPlan) {
+              await supabase.from("user_plans").update({
+                message_count: (ownerPlan.message_count || 0) + 1,
+                updated_at: new Date().toISOString(),
+              }).eq("user_id", bot.user_id);
+            }
+          }
           // Track conversation
           try {
             const today = new Date().toISOString().split("T")[0];
