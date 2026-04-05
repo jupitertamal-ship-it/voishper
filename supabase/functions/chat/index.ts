@@ -49,6 +49,35 @@ serve(async (req) => {
       });
     }
 
+    // Check bot owner's plan for ban & message limits
+    const { data: ownerPlan } = await supabase.from("user_plans").select("*").eq("user_id", bot.user_id).maybeSingle();
+    if (ownerPlan?.is_banned) {
+      return new Response(JSON.stringify({ error: "This bot's owner account has been suspended." }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check message limits for free plan
+    if (ownerPlan && ownerPlan.plan_status === "free") {
+      // Reset monthly count if needed
+      const resetDate = new Date(ownerPlan.message_reset_date);
+      const now = new Date();
+      const needsReset = now.getFullYear() > resetDate.getFullYear() ||
+        (now.getFullYear() === resetDate.getFullYear() && now.getMonth() > resetDate.getMonth());
+      
+      if (needsReset) {
+        await supabase.from("user_plans").update({
+          message_count: 0,
+          message_reset_date: now.toISOString().split("T")[0],
+          updated_at: now.toISOString(),
+        }).eq("user_id", bot.user_id);
+      } else if (ownerPlan.message_count >= 50) {
+        return new Response(JSON.stringify({ error: "Monthly message limit reached. Bot owner needs to upgrade to Premium." }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     // Domain whitelist check
     const whitelist = bot.domain_whitelist || [];
     if (origin && whitelist.length > 0) {
