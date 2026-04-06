@@ -18,7 +18,7 @@ export function BanGuard({ children }: { children: ReactNode }) {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center max-w-md p-8">
           <Shield className="h-16 w-16 text-destructive mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-2">অ্যাকাউন্ট সাসপেন্ড করা হয়েছে</h1>
+          <h1 className="text-2xl font-bold mb-2">Account Suspended</h1>
           <p className="text-muted-foreground">
             Your account has been suspended. Please contact support for assistance.
           </p>

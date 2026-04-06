@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Zap, BarChart3, Shield, ArrowRight, Star, Users, Bot, Globe, FileText, Code, Mic, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { MessageSquare, Zap, BarChart3, Shield, ArrowRight, Star, Users, Bot, Globe, FileText, Code, Mic, ChevronLeft, ChevronRight, X, Crown, Check } from 'lucide-react';
 
 const STATS = [
   { icon: Bot, label: 'AI Agents Created', value: '5,000+' },
@@ -203,6 +203,58 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Simple <span className="text-gradient">Pricing</span></h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">Start free, upgrade when you need more power.</p>
+        </motion.div>
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Free */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <div className="glass-panel p-8 rounded-xl border border-border/50 h-full">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="h-5 w-5 text-primary" />
+                <h3 className="text-xl font-bold font-display">Free</h3>
+              </div>
+              <p className="text-4xl font-bold font-display mb-1">$0</p>
+              <p className="text-sm text-muted-foreground mb-6">Forever free</p>
+              <ul className="space-y-3 text-sm mb-8">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> 1 website scrape</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> 50 AI messages / month</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Lead capture</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Analytics dashboard</li>
+              </ul>
+              <Button variant="outline" onClick={() => navigate('/auth')} className="w-full">
+                Get Started
+              </Button>
+            </div>
+          </motion.div>
+          {/* Pro */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+            <div className="glass-panel neon-border p-8 rounded-xl h-full relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-gradient-to-bl from-yellow-500/20 to-transparent w-32 h-32" />
+              <div className="flex items-center gap-2 mb-4">
+                <Crown className="h-5 w-5 text-yellow-400" />
+                <h3 className="text-xl font-bold font-display">Pro</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-medium">POPULAR</span>
+              </div>
+              <p className="text-4xl font-bold font-display mb-1">৳500</p>
+              <p className="text-sm text-muted-foreground mb-6">per month</p>
+              <ul className="space-y-3 text-sm mb-8">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited website scraping</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited AI messages</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Voice support (coming soon)</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Priority support</li>
+              </ul>
+              <Button onClick={() => navigate('/auth')} className="w-full neon-glow gap-2">
+                <Crown className="h-4 w-4" /> Upgrade to Pro
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 pb-24">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel neon-border rounded-2xl p-10 md:p-16 text-center">
@@ -216,6 +268,7 @@ const Index = () => {
 
       <footer className="relative z-10 border-t border-border/30 py-8 text-center text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} Voishper. All rights reserved.</p>
+        <p className="mt-1 text-xs">Created by Muntasir</p>
       </footer>
 
       {/* Demo Overlay */}

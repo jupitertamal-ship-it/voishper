@@ -65,7 +65,6 @@ const Knowledge = () => {
       toast({ title: 'URL scraped successfully!' });
       setUrl('');
       refreshPlan();
-      // Refresh items
       const { data: updated } = await supabase.from('knowledge_items').select('*').eq('bot_id', selectedBot).order('created_at', { ascending: false });
       setItems(updated || []);
     } catch (e: any) {
@@ -139,7 +138,6 @@ const Knowledge = () => {
               </div>
             </div>
 
-            {/* URL Scraper */}
             <Card className="glass-panel">
               <CardHeader><CardTitle className="text-base flex items-center gap-2"><Globe className="h-4 w-4 text-primary" /> Scrape Website</CardTitle></CardHeader>
               <CardContent>
@@ -153,7 +151,6 @@ const Knowledge = () => {
               </CardContent>
             </Card>
 
-            {/* File Upload Drop Zone */}
             <Card
               className={`glass-panel transition-colors ${dragOver ? 'border-primary bg-primary/5' : ''}`}
               onDragOver={e => { e.preventDefault(); setDragOver(true); }}
@@ -174,7 +171,6 @@ const Knowledge = () => {
               </CardContent>
             </Card>
 
-            {/* Knowledge Items List */}
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Ingested Sources ({items.length})</h2>
               {items.map((item, i) => (
@@ -197,7 +193,7 @@ const Knowledge = () => {
           </>
         )}
       </div>
-      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} feature="আরো ওয়েবসাইট স্ক্র্যাপিং" />
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} feature="more website scraping" />
     </DashboardLayout>
   );
 };

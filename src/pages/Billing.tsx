@@ -21,7 +21,7 @@ const Billing = () => {
 
   const submitPayment = async () => {
     if (!user || !paymentNumber.trim() || !transactionId.trim()) {
-      toast({ title: 'সব ফিল্ড পূরণ করুন', variant: 'destructive' });
+      toast({ title: 'Please fill all fields', variant: 'destructive' });
       return;
     }
     setSubmitting(true);
@@ -34,7 +34,7 @@ const Billing = () => {
         status: 'pending',
       });
       if (error) throw error;
-      toast({ title: 'পেমেন্ট সাবমিট হয়েছে! ✅', description: 'অ্যাডমিন অনুমোদনের পরে আপনার প্ল্যান আপগ্রেড হবে।' });
+      toast({ title: 'Payment submitted! ✅', description: 'Your plan will be upgraded after admin approval.' });
       setPaymentNumber('');
       setTransactionId('');
     } catch (e: any) {
@@ -60,7 +60,7 @@ const Billing = () => {
       <div className="space-y-6 max-w-3xl">
         <div>
           <h1 className="text-2xl font-bold font-display">Billing & Plans</h1>
-          <p className="text-muted-foreground">আপনার সাবস্ক্রিপশন ও ব্যবহার পরিচালনা করুন।</p>
+          <p className="text-muted-foreground">Manage your subscription and usage.</p>
         </div>
 
         {/* Current Plan */}
@@ -72,7 +72,7 @@ const Billing = () => {
                 <div>
                   <p className="font-bold text-lg">{isPremium ? '👑 Premium Plan' : 'Free Plan'}</p>
                   <p className="text-sm text-muted-foreground">
-                    {isPremium ? 'সব ফিচার আনলিমিটেড' : 'সীমিত ব্যবহার'}
+                    {isPremium ? 'All features unlimited' : 'Limited usage'}
                   </p>
                 </div>
               </div>
@@ -90,18 +90,18 @@ const Billing = () => {
                 <CardTitle className="text-base flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary" /> Free Plan
                 </CardTitle>
-                <CardDescription>শুরু করার জন্য</CardDescription>
+                <CardDescription>Get started for free</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">৳০ <span className="text-sm font-normal text-muted-foreground">/ মাস</span></p>
+                <p className="text-3xl font-bold mb-4">$0 <span className="text-sm font-normal text-muted-foreground">/ month</span></p>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2"><Globe className="h-4 w-4 text-primary" /> সর্বোচ্চ {freeLimits.scrapes}টি ওয়েবসাইট স্ক্র্যাপিং</li>
-                  <li className="flex items-center gap-2"><MessageSquare className="h-4 w-4 text-primary" /> সর্বোচ্চ {freeLimits.messages}টি AI মেসেজ / মাস</li>
-                  <li className="flex items-center gap-2 text-muted-foreground"><Mic className="h-4 w-4" /> ভয়েস সাপোর্ট (শীঘ্রই আসছে)</li>
+                  <li className="flex items-center gap-2"><Globe className="h-4 w-4 text-primary" /> Max {freeLimits.scrapes} website scrape</li>
+                  <li className="flex items-center gap-2"><MessageSquare className="h-4 w-4 text-primary" /> Max {freeLimits.messages} AI messages / month</li>
+                  <li className="flex items-center gap-2 text-muted-foreground"><Mic className="h-4 w-4" /> Voice support (coming soon)</li>
                 </ul>
                 {!isPremium && (
                   <div className="mt-4 p-3 rounded-lg bg-muted/30 text-xs">
-                    <p>ব্যবহার: {plan?.scrape_count || 0}/{freeLimits.scrapes} scrapes · {plan?.message_count || 0}/{freeLimits.messages} messages</p>
+                    <p>Usage: {plan?.scrape_count || 0}/{freeLimits.scrapes} scrapes · {plan?.message_count || 0}/{freeLimits.messages} messages</p>
                   </div>
                 )}
               </CardContent>
@@ -116,15 +116,15 @@ const Billing = () => {
                 <CardTitle className="text-base flex items-center gap-2">
                   <Crown className="h-4 w-4 text-yellow-400" /> Premium Plan
                 </CardTitle>
-                <CardDescription>সব কিছু আনলিমিটেড</CardDescription>
+                <CardDescription>Everything unlimited</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">৳৫০০ <span className="text-sm font-normal text-muted-foreground">/ মাস</span></p>
+                <p className="text-3xl font-bold mb-4">৳500 <span className="text-sm font-normal text-muted-foreground">/ month</span></p>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> আনলিমিটেড ওয়েবসাইট স্ক্র্যাপিং</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> আনলিমিটেড AI মেসেজ</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> ভয়েস সাপোর্ট (শীঘ্রই)</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> অগ্রাধিকার সাপোর্ট</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited website scraping</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited AI messages</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Voice support (coming soon)</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Priority support</li>
                 </ul>
               </CardContent>
             </Card>
@@ -137,22 +137,22 @@ const Billing = () => {
             <Card className="glass-panel">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Send className="h-4 w-4 text-primary" /> পেমেন্ট করুন (নগদ)
+                  <Send className="h-4 w-4 text-primary" /> Make Payment (Nagad)
                 </CardTitle>
                 <CardDescription>
-                  নিচের নম্বরে ৫০০ টাকা Send Money করুন, তারপর ফর্মটি পূরণ করুন।
+                  Send 500 BDT to the number below, then fill in the form.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
-                  <p className="text-sm text-muted-foreground mb-1">নগদ পার্সোনাল নম্বর:</p>
+                  <p className="text-sm text-muted-foreground mb-1">Nagad Personal Number:</p>
                   <p className="text-2xl font-bold font-mono text-primary">01325 117858</p>
-                  <p className="text-xs text-muted-foreground mt-1">Send Money → ৫০০ টাকা</p>
+                  <p className="text-xs text-muted-foreground mt-1">Send Money → 500 BDT</p>
                 </div>
 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">পেমেন্ট ফোন নম্বর</label>
+                    <label className="text-sm text-muted-foreground mb-1 block">Payment Phone Number</label>
                     <Input
                       placeholder="01XXXXXXXXX"
                       value={paymentNumber}
@@ -175,10 +175,10 @@ const Billing = () => {
                     className="w-full gap-2 neon-glow"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                    {submitting ? 'সাবমিট হচ্ছে...' : 'পেমেন্ট সাবমিট করুন'}
+                    {submitting ? 'Submitting...' : 'Submit Payment'}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center">
-                    অ্যাডমিন রিভিউ করে অনুমোদনের পর আপনার অ্যাকাউন্ট Premium-এ আপগ্রেড হবে।
+                    Your account will be upgraded to Premium after admin review and approval.
                   </p>
                 </div>
               </CardContent>
