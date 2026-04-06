@@ -19,29 +19,6 @@ serve(async (req) => {
     const body = await req.json();
     const { action, ...params } = body;
 
-    // Force signout - can be called with service role key
-    if (action === "force_signout_all") {
-      const authHeader = req.headers.get("Authorization");
-      const token = authHeader?.replace("Bearer ", "") || "";
-      // Allow if service role key is used directly OR if admin user
-      if (token === supabaseServiceKey) {
-        const adminClient = createClient(supabaseUrl, supabaseServiceKey);
-        const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-        if (error) throw error;
-        let count = 0;
-        for (const u of users) {
-          try {
-            await adminClient.auth.admin.signOut(u.id);
-            count++;
-          } catch (_) {}
-        }
-        return new Response(JSON.stringify({ success: true, count }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      // Otherwise fall through to normal admin auth
-    }
-
     // Public action: submit_reset_request (no auth needed)
     if (action === "submit_reset_request") {
       const { email, reason } = params;
