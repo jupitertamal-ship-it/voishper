@@ -9,7 +9,7 @@ type Props = {
   feature?: string;
 };
 
-export function UpgradeDialog({ open, onOpenChange, feature = 'এই ফিচার' }: Props) {
+export function UpgradeDialog({ open, onOpenChange, feature = 'this feature' }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -17,16 +17,16 @@ export function UpgradeDialog({ open, onOpenChange, feature = 'এই ফিচ�
       <DialogContent className="glass-panel border-primary/20">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Crown className="h-5 w-5 text-yellow-400" /> আপগ্রেড করুন
+            <Crown className="h-5 w-5 text-yellow-400" /> Upgrade Required
           </DialogTitle>
           <DialogDescription>
-            {feature} ব্যবহার করতে Premium Plan-এ আপগ্রেড করুন। মাত্র ৫০০ টাকা/মাস।
+            Upgrade to the Premium Plan to use {feature}. Only 500 BDT/month.
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2 mt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>পরে</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Later</Button>
           <Button onClick={() => { onOpenChange(false); navigate('/billing'); }} className="gap-2 neon-glow">
-            <Crown className="h-4 w-4" /> আপগ্রেড করুন
+            <Crown className="h-4 w-4" /> Upgrade Now
           </Button>
         </div>
       </DialogContent>

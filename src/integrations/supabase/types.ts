@@ -220,6 +220,36 @@ export type Database = {
           },
         ]
       }
+      password_reset_requests: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          resolved_at: string | null
+          status: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          status?: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          status?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_submissions: {
         Row: {
           created_at: string

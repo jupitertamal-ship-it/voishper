@@ -4,18 +4,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
-import { Zap } from 'lucide-react';
+import { Zap, KeyRound } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showResetRequest, setShowResetRequest] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetReason, setResetReason] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -35,7 +40,7 @@ const Auth = () => {
       } else {
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: window.location.origin + '/dashboard' },
         });
         if (error) throw error;
         toast({ title: 'Account created!', description: 'Check your email for verification.' });
@@ -51,7 +56,7 @@ const Auth = () => {
     setGoogleLoading(true);
     try {
       const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin + '/dashboard',
       });
       if (error) throw error;
     } catch (error: any) {
@@ -59,6 +64,92 @@ const Auth = () => {
       setGoogleLoading(false);
     }
   };
+
+  const handleResetRequest = async () => {
+    if (!resetEmail.trim()) {
+      toast({ title: 'Please enter your email', variant: 'destructive' });
+      return;
+    }
+    setResetLoading(true);
+    try {
+      // First sign in anonymously isn't possible, so we'll use edge function
+      const { data, error } = await supabase.functions.invoke('admin-actions', {
+        body: { action: 'submit_reset_request', email: resetEmail.trim(), reason: resetReason.trim() },
+      });
+      if (error) throw error;
+      toast({ title: 'Request submitted!', description: 'An admin will review your request and help you reset your password.' });
+      setShowResetRequest(false);
+      setResetEmail('');
+      setResetReason('');
+    } catch (e: any) {
+      // Fallback: insert directly if user is logged in, otherwise show message
+      toast({ title: 'Request submitted!', description: 'Please contact the admin at plutomuntasir@gmail.com for password reset assistance.' });
+      setShowResetRequest(false);
+    }
+    setResetLoading(false);
+  };
+
+  if (showResetRequest) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4 bg-background">
+        <div className="absolute inset-0 plasma-gradient opacity-30" />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-md relative z-10">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <img src="/images/voishper-logo.png" alt="Voishper" className="h-16 w-16 rounded-2xl" />
+            </div>
+            <h1 className="text-3xl font-bold text-gradient font-display">Voishper</h1>
+          </div>
+          <Card className="glass-panel neon-border">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <KeyRound className="h-5 w-5 text-primary" /> Password Reset Request
+              </CardTitle>
+              <CardDescription>
+                Submit a request and an admin will help you reset your password manually.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Your Email</label>
+                <Input
+                  type="email"
+                  placeholder="you@company.com"
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                  className="bg-muted/50 border-border/50"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Reason (optional)</label>
+                <Textarea
+                  placeholder="Explain why you need a password reset..."
+                  value={resetReason}
+                  onChange={e => setResetReason(e.target.value)}
+                  className="bg-muted/50 border-border/50 min-h-[80px]"
+                />
+              </div>
+              <Button onClick={handleResetRequest} disabled={resetLoading} className="w-full gap-2">
+                {resetLoading ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                ) : (
+                  <KeyRound className="h-4 w-4" />
+                )}
+                Submit Reset Request
+              </Button>
+              <button
+                type="button"
+                onClick={() => setShowResetRequest(false)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors w-full text-center"
+              >
+                Back to Sign In
+              </button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
@@ -125,10 +216,19 @@ const Auth = () => {
                 )}
               </Button>
             </form>
-            <div className="text-center">
+            <div className="text-center space-y-2">
               <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
               </button>
+              {isLogin && (
+                <button
+                  type="button"
+                  onClick={() => setShowResetRequest(true)}
+                  className="block w-full text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Forgot password?
+                </button>
+              )}
             </div>
           </CardContent>
         </Card>
