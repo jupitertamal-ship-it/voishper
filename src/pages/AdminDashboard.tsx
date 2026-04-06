@@ -150,7 +150,18 @@ const AdminDashboard = () => {
     setLoadingAction(null);
   };
 
-  if (planLoading) {
+  const forceSignOutAll = async () => {
+    if (!confirm('Are you sure you want to sign out ALL users? Everyone will need to log in again.')) return;
+    setLoadingAction('signout-all');
+    try {
+      await adminAction('force_signout_all');
+      toast({ title: 'All users signed out!', description: 'Everyone must re-authenticate.' });
+    } catch (e: any) {
+      toast({ title: 'Error', description: e.message, variant: 'destructive' });
+    }
+    setLoadingAction(null);
+  };
+
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[400px]">
