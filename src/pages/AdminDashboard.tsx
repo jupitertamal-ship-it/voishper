@@ -185,6 +185,16 @@ const AdminDashboard = () => {
             <h1 className="text-2xl font-bold font-display">Super Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage users, payments, and platform settings.</p>
           </div>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={forceSignOutAll}
+            disabled={loadingAction === 'signout-all'}
+            className="text-xs h-8 gap-1"
+          >
+            {loadingAction === 'signout-all' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Shield className="h-3 w-3" />}
+            Force Sign Out All
+          </Button>
         </div>
 
         {/* Stats */}
