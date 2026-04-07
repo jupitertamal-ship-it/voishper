@@ -20,7 +20,7 @@ export function UpgradeDialog({ open, onOpenChange, feature = 'this feature' }: 
             <Crown className="h-5 w-5 text-yellow-400" /> Upgrade Required
           </DialogTitle>
           <DialogDescription>
-            Upgrade to the Premium Plan to use {feature}. Only 500 BDT/month.
+            Upgrade to the Premium Plan to use {feature}. Only $5/month.
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2 mt-4">

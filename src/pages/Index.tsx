@@ -233,13 +233,13 @@ const Index = () => {
           {/* Pro */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
             <div className="glass-panel neon-border p-8 rounded-xl h-full relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-gradient-to-bl from-yellow-500/20 to-transparent w-32 h-32" />
+              
               <div className="flex items-center gap-2 mb-4">
                 <Crown className="h-5 w-5 text-yellow-400" />
                 <h3 className="text-xl font-bold font-display">Pro</h3>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-medium">POPULAR</span>
               </div>
-              <p className="text-4xl font-bold font-display mb-1">৳500</p>
+              <p className="text-4xl font-bold font-display mb-1">$5</p>
               <p className="text-sm text-muted-foreground mb-6">per month</p>
               <ul className="space-y-3 text-sm mb-8">
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited website scraping</li>
