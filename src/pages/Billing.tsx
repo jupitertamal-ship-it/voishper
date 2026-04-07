@@ -111,7 +111,7 @@ const Billing = () => {
           {/* Premium Plan */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <Card className={`glass-panel h-full relative overflow-hidden ${isPremium ? 'neon-border' : ''}`}>
-              <div className="absolute top-0 right-0 bg-gradient-to-bl from-yellow-500/20 to-transparent w-32 h-32" />
+              
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <Crown className="h-4 w-4 text-yellow-400" /> Premium Plan
@@ -119,7 +119,7 @@ const Billing = () => {
                 <CardDescription>Everything unlimited</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">৳500 <span className="text-sm font-normal text-muted-foreground">/ month</span></p>
+                <p className="text-3xl font-bold mb-4">$5 <span className="text-sm font-normal text-muted-foreground">/ month</span></p>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited website scraping</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> Unlimited AI messages</li>
@@ -137,17 +137,17 @@ const Billing = () => {
             <Card className="glass-panel">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Send className="h-4 w-4 text-primary" /> Make Payment (Nagad)
+                  <Send className="h-4 w-4 text-primary" /> Make Payment
                 </CardTitle>
                 <CardDescription>
-                  Send 500 BDT to the number below, then fill in the form.
+                  Send $5 to the number below, then fill in the form.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
-                  <p className="text-sm text-muted-foreground mb-1">Nagad Personal Number:</p>
+                  <p className="text-sm text-muted-foreground mb-1">Payment Number:</p>
                   <p className="text-2xl font-bold font-mono text-primary">01325 117858</p>
-                  <p className="text-xs text-muted-foreground mt-1">Send Money → 500 BDT</p>
+                  <p className="text-xs text-muted-foreground mt-1">Send Money → $5</p>
                 </div>
 
                 <div className="space-y-3">
