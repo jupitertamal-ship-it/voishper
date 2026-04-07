@@ -137,8 +137,8 @@ export function OmniWidget({
         return;
       }
 
-      const hasWp = resp.headers.get('X-Has-Whatsapp');
-      if (hasWp === 'true') setShowWhatsapp(true);
+      const wpNum = resp.headers.get('X-Whatsapp-Number');
+      if (wpNum) setWhatsappNumber(wpNum);
       if (!resp.ok || !resp.body) throw new Error('Failed');
 
       const reader = resp.body.getReader();
