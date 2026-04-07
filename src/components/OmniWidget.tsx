@@ -61,10 +61,9 @@ export function OmniWidget({
 
   useEffect(() => {
     if (!botId) return;
-    supabase.from('bots').select('*').eq('id', botId).single().then(({ data }) => {
+    supabase.from('public_bot_config' as any).select('*').eq('id', botId).single().then(({ data }) => {
       if (data) {
         setBotConfig(data);
-        if (data.whatsapp_number) setWhatsappNumber(data.whatsapp_number);
       }
     });
   }, [botId]);
@@ -138,8 +137,8 @@ export function OmniWidget({
         return;
       }
 
-      const wpNum = resp.headers.get('X-Whatsapp-Number');
-      if (wpNum) setWhatsappNumber(wpNum);
+      const hasWp = resp.headers.get('X-Has-Whatsapp');
+      if (hasWp === 'true') setShowWhatsapp(true);
       if (!resp.ok || !resp.body) throw new Error('Failed');
 
       const reader = resp.body.getReader();

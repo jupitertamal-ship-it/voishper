@@ -248,7 +248,7 @@ serve(async (req) => {
       headers: {
         ...corsHeaders,
         "Content-Type": "text/event-stream",
-        "X-Whatsapp-Number": bot.whatsapp_number || "",
+        "X-Has-Whatsapp": bot.whatsapp_number ? "true" : "false",
       },
     });
   } catch (e) {
