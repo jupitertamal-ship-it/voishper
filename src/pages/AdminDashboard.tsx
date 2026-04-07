@@ -162,6 +162,7 @@ const AdminDashboard = () => {
     setLoadingAction(null);
   };
 
+  if (planLoading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[400px]">
