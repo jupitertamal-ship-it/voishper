@@ -61,9 +61,9 @@ export function OmniWidget({
 
   useEffect(() => {
     if (!botId) return;
-    supabase.from('public_bot_config' as any).select('*').eq('id', botId).single().then(({ data }) => {
-      if (data) {
-        setBotConfig(data);
+    supabase.rpc('get_bot_config', { _bot_id: botId }).then(({ data }) => {
+      if (data && data.length > 0) {
+        setBotConfig(data[0]);
       }
     });
   }, [botId]);
