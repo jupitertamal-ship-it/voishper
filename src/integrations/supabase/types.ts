@@ -47,13 +47,6 @@ export type Database = {
             referencedRelation: "bots"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "analytics_bot_id_fkey"
-            columns: ["bot_id"]
-            isOneToOne: false
-            referencedRelation: "public_bot_config"
-            referencedColumns: ["id"]
-          },
         ]
       }
       bots: {
@@ -155,13 +148,6 @@ export type Database = {
             referencedRelation: "bots"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "conversations_bot_id_fkey"
-            columns: ["bot_id"]
-            isOneToOne: false
-            referencedRelation: "public_bot_config"
-            referencedColumns: ["id"]
-          },
         ]
       }
       knowledge_items: {
@@ -197,13 +183,6 @@ export type Database = {
             referencedRelation: "bots"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "knowledge_items_bot_id_fkey"
-            columns: ["bot_id"]
-            isOneToOne: false
-            referencedRelation: "public_bot_config"
-            referencedColumns: ["id"]
-          },
         ]
       }
       leads: {
@@ -237,13 +216,6 @@ export type Database = {
             columns: ["bot_id"]
             isOneToOne: false
             referencedRelation: "bots"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_bot_id_fkey"
-            columns: ["bot_id"]
-            isOneToOne: false
-            referencedRelation: "public_bot_config"
             referencedColumns: ["id"]
           },
         ]
@@ -391,35 +363,20 @@ export type Database = {
       }
     }
     Views: {
-      public_bot_config: {
-        Row: {
-          colors: Json | null
-          domain_whitelist: string[] | null
-          greeting_message: string | null
-          id: string | null
-          name: string | null
-          website_url: string | null
-        }
-        Insert: {
-          colors?: Json | null
-          domain_whitelist?: string[] | null
-          greeting_message?: string | null
-          id?: string | null
-          name?: string | null
-          website_url?: string | null
-        }
-        Update: {
-          colors?: Json | null
-          domain_whitelist?: string[] | null
-          greeting_message?: string | null
-          id?: string | null
-          name?: string | null
-          website_url?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_bot_config: {
+        Args: { _bot_id: string }
+        Returns: {
+          colors: Json
+          domain_whitelist: string[]
+          greeting_message: string
+          id: string
+          name: string
+          website_url: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
