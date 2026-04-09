@@ -7,6 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
+import { useUserPlan } from '@/hooks/use-user-plan';
+import { UpgradeDialog } from '@/components/UpgradeDialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, FileText, Upload, Loader2, CheckCircle2, Sparkles, Copy, ArrowRight, ArrowLeft, Eye, Trash2, Phone, Shield, RefreshCw } from 'lucide-react';
 
