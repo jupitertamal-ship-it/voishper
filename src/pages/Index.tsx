@@ -1,8 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Zap, BarChart3, Shield, ArrowRight, Star, Users, Bot, Globe, FileText, Code, Mic, ChevronLeft, ChevronRight, X, Crown, Check } from 'lucide-react';
+
+const HowItWorks = lazy(() => import('@/components/HowItWorks'));
 
 const STATS = [
   { icon: Bot, label: 'AI Agents Created', value: '5,000+' },
@@ -203,6 +206,11 @@ const Index = () => {
         </div>
       </section>
 
+      {/* How It Works */}
+      <Suspense fallback={<div className="h-96" />}>
+        <HowItWorks />
+      </Suspense>
+
       {/* Pricing Section */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pb-20">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
@@ -267,6 +275,11 @@ const Index = () => {
       </section>
 
       <footer className="relative z-10 border-t border-border/30 py-8 text-center text-sm text-muted-foreground">
+        <div className="flex items-center justify-center gap-4 mb-3">
+          <Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+          <span className="text-border">•</span>
+          <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+        </div>
         <p>© {new Date().getFullYear()} Voishper. All rights reserved.</p>
         <p className="mt-1 text-xs">Created by Muntasir</p>
       </footer>
