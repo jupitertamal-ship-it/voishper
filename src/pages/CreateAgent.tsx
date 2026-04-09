@@ -24,6 +24,8 @@ const STEPS = ['Enter Website', 'Review Data', 'Configure Agent', 'Get Embed Cod
 const CreateAgent = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { canScrape, refresh: refreshPlan } = useUserPlan();
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [step, setStep] = useState(0);
 
   // Step 0
