@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
@@ -143,10 +144,19 @@ const Knowledge = () => {
               <CardContent>
                 <div className="flex gap-2">
                   <Input placeholder="https://example.com" value={url} onChange={e => setUrl(e.target.value)} className="bg-muted/50" />
-                  <Button onClick={scrapeUrl} disabled={scraping || !url} className="gap-2 shrink-0">
-                    {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Link className="h-4 w-4" />}
-                    {scraping ? 'Scraping...' : 'Scrape'}
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="shrink-0">
+                          <Button onClick={scrapeUrl} disabled={scraping || !url || !canScrape} className="gap-2">
+                            {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Link className="h-4 w-4" />}
+                            {scraping ? 'Scraping...' : 'Scrape'}
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      {!canScrape && <TooltipContent>Plan Limit Reached — Upgrade to Pro</TooltipContent>}
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </CardContent>
             </Card>
