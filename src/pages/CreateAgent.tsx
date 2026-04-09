@@ -48,6 +48,10 @@ const CreateAgent = () => {
 
   const scrapeUrl = async () => {
     if (!url) return;
+    if (!canScrape) {
+      setShowUpgrade(true);
+      return;
+    }
     setScraping(true);
     try {
       // Use edge function with Jina scraper
