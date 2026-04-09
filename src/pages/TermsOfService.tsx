@@ -47,7 +47,7 @@ export default function TermsOfService() {
           <p>These Terms shall be governed by and construed in accordance with applicable international commercial law principles. Any disputes arising from these Terms or your use of the Service shall first be attempted to be resolved through good-faith negotiation. If negotiation fails, disputes shall be submitted to binding arbitration in accordance with internationally recognized arbitration rules.</p>
 
           <h2>12. Contact Information</h2>
-          <p>For questions or concerns regarding these Terms, please contact us through the Voishper platform's built-in support widget or reach out to our team via the channels provided in your account dashboard.</p>
+          <p>For questions or concerns regarding these Terms, please contact us at <strong>support@voishper.lovable.app</strong> or through the Voishper platform's built-in support widget.</p>
         </div>
       </div>
     </div>

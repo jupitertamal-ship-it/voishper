@@ -7,6 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
+import { useUserPlan } from '@/hooks/use-user-plan';
+import { UpgradeDialog } from '@/components/UpgradeDialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, FileText, Upload, Loader2, CheckCircle2, Sparkles, Copy, ArrowRight, ArrowLeft, Eye, Trash2, Phone, Shield, RefreshCw } from 'lucide-react';
 
@@ -21,6 +24,8 @@ const STEPS = ['Enter Website', 'Review Data', 'Configure Agent', 'Get Embed Cod
 const CreateAgent = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { canScrape, refresh: refreshPlan } = useUserPlan();
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [step, setStep] = useState(0);
 
   // Step 0
@@ -43,6 +48,10 @@ const CreateAgent = () => {
 
   const scrapeUrl = async () => {
     if (!url) return;
+    if (!canScrape) {
+      setShowUpgrade(true);
+      return;
+    }
     setScraping(true);
     try {
       // Use edge function with Jina scraper
@@ -179,10 +188,19 @@ const CreateAgent = () => {
                   <p className="text-xs text-muted-foreground mb-3">Enter your website URL. We'll extract all relevant content using AI-powered scraping.</p>
                   <div className="flex gap-2">
                     <Input placeholder="https://your-website.com" value={url} onChange={e => setUrl(e.target.value)} className="bg-muted/50" onKeyDown={e => e.key === 'Enter' && scrapeUrl()} />
-                    <Button onClick={scrapeUrl} disabled={scraping || !url} className="gap-2 shrink-0">
-                      {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />}
-                      {scraping ? 'Scraping...' : 'Scrape'}
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="shrink-0">
+                            <Button onClick={scrapeUrl} disabled={scraping || !url || !canScrape} className="gap-2">
+                              {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />}
+                              {scraping ? 'Scraping...' : 'Scrape'}
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        {!canScrape && <TooltipContent>Plan Limit Reached — Upgrade to Pro</TooltipContent>}
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </CardContent>
               </Card>
@@ -368,6 +386,7 @@ const CreateAgent = () => {
           )}
         </AnimatePresence>
       </div>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} feature="more website scraping" />
     </DashboardLayout>
   );
 };

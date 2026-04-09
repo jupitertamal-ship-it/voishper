@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
           <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, or legal requirements. We will notify you of material changes by posting a prominent notice on the Service or sending you an email. Your continued use of the Service after such changes constitutes acceptance of the updated policy.</p>
 
           <h2>13. Contact Us</h2>
-          <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please reach out to us through the Voishper platform's built-in support widget or contact our team via the channels provided in your account dashboard. We are committed to resolving any privacy-related concerns promptly and transparently.</p>
+          <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at <strong>support@voishper.lovable.app</strong> or through the Voishper platform's built-in support widget. We are committed to resolving any privacy-related concerns promptly and transparently.</p>
         </div>
       </div>
     </div>

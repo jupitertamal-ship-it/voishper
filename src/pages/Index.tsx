@@ -280,9 +280,22 @@ const Index = () => {
           <span className="text-border">•</span>
           <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
         </div>
-        <p>© {new Date().getFullYear()} Voishper. All rights reserved.</p>
-        <p className="mt-1 text-xs">Created by Muntasir</p>
+        <p>© 2026 Voishper. All rights reserved. Built with passion by Muntasir.</p>
       </footer>
+
+      {/* Voishper Self-Support Widget */}
+      <div
+        id="voishper-self-widget"
+        style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 999999, pointerEvents: 'none' }}
+      >
+        <iframe
+          src="/widget/self-support"
+          style={{ width: 420, height: 600, border: 'none', background: 'transparent', pointerEvents: 'auto' }}
+          allow="microphone"
+          loading="lazy"
+          title="Voishper Support Widget"
+        />
+      </div>
 
       {/* Demo Overlay */}
       <AnimatePresence>
