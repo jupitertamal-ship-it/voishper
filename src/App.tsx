@@ -16,6 +16,8 @@ import SettingsPage from "./pages/SettingsPage.tsx";
 import WidgetDemo from "./pages/WidgetDemo.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import Billing from "./pages/Billing.tsx";
+import TermsOfService from "./pages/TermsOfService.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/billing" element={<Billing />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/widget/:botId" element={<WidgetDemo />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
