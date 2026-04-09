@@ -188,10 +188,19 @@ const CreateAgent = () => {
                   <p className="text-xs text-muted-foreground mb-3">Enter your website URL. We'll extract all relevant content using AI-powered scraping.</p>
                   <div className="flex gap-2">
                     <Input placeholder="https://your-website.com" value={url} onChange={e => setUrl(e.target.value)} className="bg-muted/50" onKeyDown={e => e.key === 'Enter' && scrapeUrl()} />
-                    <Button onClick={scrapeUrl} disabled={scraping || !url} className="gap-2 shrink-0">
-                      {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />}
-                      {scraping ? 'Scraping...' : 'Scrape'}
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="shrink-0">
+                            <Button onClick={scrapeUrl} disabled={scraping || !url || !canScrape} className="gap-2">
+                              {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Globe className="h-4 w-4" />}
+                              {scraping ? 'Scraping...' : 'Scrape'}
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        {!canScrape && <TooltipContent>Plan Limit Reached — Upgrade to Pro</TooltipContent>}
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </CardContent>
               </Card>
@@ -377,6 +386,7 @@ const CreateAgent = () => {
           )}
         </AnimatePresence>
       </div>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} feature="more website scraping" />
     </DashboardLayout>
   );
 };
