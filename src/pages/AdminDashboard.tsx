@@ -20,6 +20,9 @@ type AdminUser = {
   is_banned: boolean;
   scrape_count: number;
   message_count: number;
+  bot_count?: number;
+  conversation_count?: number;
+  total_messages?: number;
 };
 
 type Payment = {
@@ -273,7 +276,7 @@ const AdminDashboard = () => {
                         <TableHead className="min-w-[200px]">Email</TableHead>
                         <TableHead className="min-w-[100px]">Plan</TableHead>
                         <TableHead className="min-w-[100px]">Status</TableHead>
-                        <TableHead className="min-w-[140px]">Usage</TableHead>
+                        <TableHead className="min-w-[220px]">Usage</TableHead>
                         <TableHead className="min-w-[160px]">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -292,7 +295,11 @@ const AdminDashboard = () => {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground">
-                            {u.scrape_count} scrapes · {u.message_count} msgs
+                            <div className="flex flex-col gap-0.5">
+                              <span>🤖 {u.bot_count ?? 0} bots · 🌐 {u.scrape_count} scrapes</span>
+                              <span>💬 {u.total_messages ?? 0} msgs · 🗨️ {u.conversation_count ?? 0} chats</span>
+                              <span className="opacity-60">Quota: {u.message_count} msgs this month</span>
+                            </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-1">
