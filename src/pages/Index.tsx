@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Zap, BarChart3, Shield, ArrowRight, Star, Users, Bot, Globe, FileText, Code, Mic, ChevronLeft, ChevronRight, X, Crown, Check } from 'lucide-react';
 
 const HowItWorks = lazy(() => import('@/components/HowItWorks'));
+const OmniWidget = lazy(() => import('@/components/OmniWidget').then(m => ({ default: m.OmniWidget })));
+
+// Voishper's self-support bot — pre-trained on platform docs
+const VOISHPER_SUPPORT_BOT_ID = '78f51193-e5c3-4ca9-bfd5-221279707f5d';
 
 const STATS = [
   { icon: Bot, label: 'AI Agents Created', value: '5,000+' },
@@ -283,19 +287,10 @@ const Index = () => {
         <p>© 2026 Voishper. All rights reserved. Built with passion by Muntasir.</p>
       </footer>
 
-      {/* Voishper Self-Support Widget */}
-      <div
-        id="voishper-self-widget"
-        style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 999999, pointerEvents: 'none' }}
-      >
-        <iframe
-          src="/widget/self-support"
-          style={{ width: 420, height: 600, border: 'none', background: 'transparent', pointerEvents: 'auto' }}
-          allow="microphone"
-          loading="lazy"
-          title="Voishper Support Widget"
-        />
-      </div>
+      {/* Voishper Self-Support Widget — small floating bubble */}
+      <Suspense fallback={null}>
+        <OmniWidget botId={VOISHPER_SUPPORT_BOT_ID} />
+      </Suspense>
 
       {/* Demo Overlay */}
       <AnimatePresence>
