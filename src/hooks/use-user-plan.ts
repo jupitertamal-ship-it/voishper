@@ -46,6 +46,12 @@ export function useUserPlan() {
       .eq('user_id', user.id)
       .maybeSingle();
 
+    // Count bots owned by user
+    const { count: botCount } = await supabase
+      .from('bots')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+
     if (planData) {
       // Reset monthly message count if needed
       const resetDate = new Date(planData.message_reset_date);
@@ -60,6 +66,7 @@ export function useUserPlan() {
         message_count: needsReset ? 0 : planData.message_count,
         message_reset_date: planData.message_reset_date,
         isAdmin: roleData?.role === 'admin',
+        bot_count: botCount || 0,
       });
     }
     setLoading(false);
@@ -67,18 +74,23 @@ export function useUserPlan() {
 
   useEffect(() => { fetchPlan(); }, [user]);
 
-  const canScrape = plan ? (plan.plan_status === 'premium' || plan.scrape_count < FREE_LIMITS.scrapes) : false;
-  const canMessage = plan ? (plan.plan_status === 'premium' || plan.message_count < FREE_LIMITS.messages) : false;
-  const remainingScrapes = plan ? (plan.plan_status === 'premium' ? Infinity : Math.max(0, FREE_LIMITS.scrapes - plan.scrape_count)) : 0;
-  const remainingMessages = plan ? (plan.plan_status === 'premium' ? Infinity : Math.max(0, FREE_LIMITS.messages - plan.message_count)) : 0;
+  const isPremium = plan?.plan_status === 'premium' || !!plan?.isAdmin;
+  const canScrape = plan ? (isPremium || plan.scrape_count < FREE_LIMITS.scrapes) : false;
+  const canMessage = plan ? (isPremium || plan.message_count < FREE_LIMITS.messages) : false;
+  const canCreateBot = plan ? (isPremium || plan.bot_count < FREE_LIMITS.bots) : false;
+  const remainingScrapes = plan ? (isPremium ? Infinity : Math.max(0, FREE_LIMITS.scrapes - plan.scrape_count)) : 0;
+  const remainingMessages = plan ? (isPremium ? Infinity : Math.max(0, FREE_LIMITS.messages - plan.message_count)) : 0;
+  const remainingBots = plan ? (isPremium ? Infinity : Math.max(0, FREE_LIMITS.bots - plan.bot_count)) : 0;
 
   return {
     plan,
     loading,
     canScrape,
     canMessage,
+    canCreateBot,
     remainingScrapes,
     remainingMessages,
+    remainingBots,
     freeLimits: FREE_LIMITS,
     refresh: fetchPlan,
   };
