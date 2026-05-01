@@ -24,7 +24,7 @@ const STEPS = ['Enter Website', 'Review Data', 'Configure Agent', 'Get Embed Cod
 const CreateAgent = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { canScrape, refresh: refreshPlan } = useUserPlan();
+  const { canScrape, canCreateBot, plan, refresh: refreshPlan } = useUserPlan();
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [step, setStep] = useState(0);
 
@@ -104,6 +104,10 @@ const CreateAgent = () => {
 
   const createBot = async () => {
     if (!user || scrapedItems.length === 0) return;
+    if (!canCreateBot) {
+      setShowUpgrade(true);
+      return;
+    }
     setCreating(true);
     try {
       const domains = domainWhitelist.split(',').map(d => d.trim()).filter(Boolean);
@@ -337,11 +341,30 @@ const CreateAgent = () => {
                 </CardContent>
               </Card>
 
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setStep(1)} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
-                <Button onClick={createBot} disabled={creating} className="flex-1 gap-2">
-                  {creating ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating...</> : <><Sparkles className="h-4 w-4" /> Create Agent</>}
-                </Button>
+              <div className="flex flex-col gap-2">
+                {!canCreateBot && plan && (
+                  <div className="text-xs text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 rounded-md p-3 flex items-center gap-2">
+                    <Shield className="h-4 w-4 shrink-0" />
+                    <span>Free plan limit reached: you can only create 1 bot. Upgrade to Premium for unlimited bots.</span>
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={() => setStep(1)} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="flex-1">
+                          <Button onClick={createBot} disabled={creating || !canCreateBot} className="w-full gap-2">
+                            {creating ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating...</> : <><Sparkles className="h-4 w-4" /> Create Agent</>}
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      {!canCreateBot && (
+                        <TooltipContent>Upgrade to Premium to create more bots</TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </div>
             </motion.div>
           )}
