@@ -185,6 +185,27 @@ export type Database = {
           },
         ]
       }
+      lead_submission_log: {
+        Row: {
+          bot_id: string
+          created_at: string
+          id: string
+          ip_hash: string
+        }
+        Insert: {
+          bot_id: string
+          created_at?: string
+          id?: string
+          ip_hash: string
+        }
+        Update: {
+          bot_id?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           bot_id: string
@@ -383,6 +404,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      submit_lead: {
+        Args: {
+          _bot_id: string
+          _chat_transcript: string
+          _email: string
+          _ip_hash: string
+          _name: string
+        }
+        Returns: string
       }
     }
     Enums: {

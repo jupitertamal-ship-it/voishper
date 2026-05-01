@@ -181,7 +181,20 @@ export function OmniWidget({
   const submitLead = async () => {
     if (!leadName || !leadEmail) return;
     const transcript = messages.map(m => `${m.role}: ${m.content}`).join('\n');
-    await supabase.from('leads').insert({ bot_id: botId, name: leadName, email: leadEmail, chat_transcript: transcript });
+    // Lightweight per-browser identifier for rate limiting (not PII).
+    let ipHash = '';
+    try {
+      const fp = `${navigator.userAgent}|${screen.width}x${screen.height}|${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fp));
+      ipHash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch {}
+    await supabase.rpc('submit_lead', {
+      _bot_id: botId,
+      _name: leadName,
+      _email: leadEmail,
+      _chat_transcript: transcript,
+      _ip_hash: ipHash,
+    });
     setShowHandoff(false);
     setMessages([...messages, { role: 'assistant', content: `Thanks ${leadName}! We'll reach out to ${leadEmail} shortly.` }]);
     setLeadName('');
