@@ -9,9 +9,10 @@ export type UserPlan = {
   message_count: number;
   message_reset_date: string;
   isAdmin: boolean;
+  bot_count: number;
 };
 
-const FREE_LIMITS = { scrapes: 1, messages: 50 };
+const FREE_LIMITS = { scrapes: 1, messages: 50, bots: 1 };
 
 export function useUserPlan() {
   const { user } = useAuth();
