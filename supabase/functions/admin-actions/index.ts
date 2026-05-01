@@ -80,6 +80,28 @@ serve(async (req) => {
         if (error) throw error;
         const { data: plans } = await admin.from("user_plans").select("*");
         const planMap = new Map((plans || []).map((p: any) => [p.user_id, p]));
+
+        // Aggregate bot counts per user
+        const { data: bots } = await admin.from("bots").select("user_id");
+        const botCountMap = new Map<string, number>();
+        (bots || []).forEach((b: any) => {
+          botCountMap.set(b.user_id, (botCountMap.get(b.user_id) || 0) + 1);
+        });
+
+        // Aggregate conversation counts per user (via their bots)
+        const { data: bots2 } = await admin.from("bots").select("id, user_id");
+        const botToOwner = new Map<string, string>();
+        (bots2 || []).forEach((b: any) => botToOwner.set(b.id, b.user_id));
+        const { data: convs } = await admin.from("conversations").select("bot_id, message_count");
+        const convCountMap = new Map<string, number>();
+        const msgCountMap = new Map<string, number>();
+        (convs || []).forEach((c: any) => {
+          const owner = botToOwner.get(c.bot_id);
+          if (!owner) return;
+          convCountMap.set(owner, (convCountMap.get(owner) || 0) + 1);
+          msgCountMap.set(owner, (msgCountMap.get(owner) || 0) + (c.message_count || 0));
+        });
+
         const result = users.map((u: any) => ({
           id: u.id,
           email: u.email,
@@ -88,6 +110,9 @@ serve(async (req) => {
           is_banned: planMap.get(u.id)?.is_banned || false,
           scrape_count: planMap.get(u.id)?.scrape_count || 0,
           message_count: planMap.get(u.id)?.message_count || 0,
+          bot_count: botCountMap.get(u.id) || 0,
+          conversation_count: convCountMap.get(u.id) || 0,
+          total_messages: msgCountMap.get(u.id) || 0,
         }));
         return new Response(JSON.stringify({ users: result }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
